@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const questionContainer = document.querySelector("#question");
   const choiceContainer = document.querySelector("#choices");
   const nextButton = document.querySelector("#nextButton");
+  const timeRemainingContainer = document.getElementById("timeRemaining");
 
   // End view elements
   const resultContainer = document.querySelector("#result");
@@ -57,21 +58,34 @@ document.addEventListener("DOMContentLoaded", () => {
   /************  SHOW INITIAL CONTENT  ************/
 
   // Convert the time remaining in seconds to minutes and seconds, and pad the numbers with zeros if needed
-  const minutes = Math.floor(quiz.timeRemaining / 60)
-    .toString()
-    .padStart(2, "0");
-  const seconds = (quiz.timeRemaining % 60).toString().padStart(2, "0");
+  //   const minutes = Math.floor(quiz.timeRemaining / 60)
+  //     .toString()
+  //     .padStart(2, "0");
+  //   const seconds = (quiz.timeRemaining % 60).toString().padStart(2, "0");
 
   // Display the time remaining in the time remaining container
-  const timeRemainingContainer = document.getElementById("timeRemaining");
-  timeRemainingContainer.innerText = `${minutes}:${seconds}`;
+  //   const timeRemainingContainer = document.getElementById("timeRemaining");
+  //   timeRemainingContainer.innerText = `${minutes}:${seconds}`;
 
   // Show first question
   showQuestion();
 
   /************  TIMER  ************/
 
-  let timer;
+  let timer = setInterval(() => {
+    quiz.timeRemaining--;
+    const minutes = Math.floor(quiz.timeRemaining / 60)
+      .toString()
+      .padStart(2, "0");
+    const seconds = (quiz.timeRemaining % 60).toString().padStart(2, "0");
+    const timeRemainingContainer = document.getElementById("timeRemaining");
+    timeRemainingContainer.innerText = `${minutes}:${seconds}`;
+    if (quiz.timeRemaining === 0) {
+      clearInterval(timer);
+      showResults();
+    }
+    // console.log(quiz.timeRemaining);
+  }, 1000);
 
   /************  EVENT LISTENERS  ************/
 
@@ -88,6 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (quiz.hasEnded()) {
       showResults();
+      clearInterval(timer);
       return;
     }
 
@@ -159,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedAnswer = choice.value;
       }
     });
-    console.log(selectedAnswer);
+    // console.log(selectedAnswer);
 
     quiz.checkAnswer(selectedAnswer);
     quiz.moveToNextQuestion();
@@ -171,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function showResults() {
     // YOUR CODE HERE:
-    //
+
     // 1. Hide the quiz view (div#quizView)
     quizView.style.display = "none";
     // 2. Show the end view (div#endView)
@@ -181,11 +196,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   let restart = document.getElementById("restartButton");
   restart.addEventListener("click", () => {
-    quizView.style.display = "block";
-    endView.style.display = "none";
-    quiz.correctAnswers = 0;
-    quiz.currentQuestionIndex = 0;
-    quiz.shuffleQuestions();
-    showQuestion();
+    // quizView.style.display = "block";
+    // endView.style.display = "none";
+    // quiz.correctAnswers = 0;
+    // quiz.currentQuestionIndex = 0;
+    // quiz.shuffleQuestions();
+    // showQuestion();
+    // quiz.timeRemaining = quizDuration;
+    window.location.reload();
   });
 });
